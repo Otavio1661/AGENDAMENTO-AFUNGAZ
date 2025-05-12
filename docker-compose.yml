@@ -1,0 +1,17 @@
+
+version: '3.2'
+
+services:
+  afungaz:
+    build:
+      context: .
+    container_name: afungaz
+    volumes:
+      - ./:/var/www/html
+    ports:
+      - "8085:80"
+  composer:
+    image: composer/composer
+    command: install
+    volumes:
+      - ./:/app

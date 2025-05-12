@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "unigazin.fullname" . }}
+  labels:
+    {{- include "unigazin.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "unigazin.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        ad.datadoghq.com/unigazin.logs: >-
+          [{
+            "source":"php",
+            "service":"{{ .Values.ddtrace.service }}",
+          }]
+        checksum/config: {{ .Files.Get ".env" | sha256sum }}
+      labels:
+        {{- include "unigazin.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "unigazin.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: unigazin
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+          - name: envfile
+            mountPath: ./.env
+            subPath: .env
+          envFrom:
+          - configMapRef:
+              name: {{ include "unigazin.fullname" . }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          env:
+            - name: DD_AGENT_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: DD_SERVICE
+              value: "{{ .Values.ddtrace.service }}"
+            - name: DD_ENV
+              value: "{{ .Values.ddtrace.env }}"
+            - name: DD_VERSION
+              value: "{{ .Values.ddtrace.version }}"
+            - name: DD_LOGS_INJECTION
+              value: "true"
+            - name: DD_TRACE_CLI_ENABLED
+              value: "true"
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }} 
+      volumes:
+      - name: envfile
+        configMap:
+          name: {{ include "unigazin.fullname" . }}
+          # defaultMode: 0777
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

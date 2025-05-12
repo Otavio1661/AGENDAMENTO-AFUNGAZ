@@ -1,0 +1,70 @@
+image: docker:19.03.12
+
+stages:
+  - build
+  - deploy
+
+.pre-docker-image-script: &docker-script
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+
+.env-script-api: &env
+  - echo Branch Atual - $CI_COMMIT_BRANCH
+  - |-
+    if [[ $CI_COMMIT_REF_NAME = $TAG_BRANCH_PROD ]]; then
+      cp $ENV_FILE .env; cp $ENV_FILE ./.devops/helm/.env;
+    else
+      echo "Branch invalida"
+    fi
+
+docker_image_publish:
+  stage: build
+  script:
+    - *docker-script
+    - *env
+    - docker build -f Dockerfile --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+  rules:
+    - if: $CI_COMMIT_BRANCH == $TAG_BRANCH_PROD
+      when: always
+    - when: never
+
+.deploy:
+  stage: deploy
+  image:
+    name: docker.io/gazin/k8s:1.0
+    entrypoint: [""]
+  script:
+    - *env
+    - kubectl create namespace ${NAMESPACE} --dry-run=client -o yaml| kubectl apply -f -
+    - kubectl label namespace ${NAMESPACE} --overwrite registry=common tls=${TLS}
+    - |-
+      helm upgrade $RELEASE_NAME --install --namespace $NAMESPACE ./.devops/helm/ \
+      --set fullnameOverride=${RELEASE_NAME} \
+      --set image.repository=$CI_REGISTRY_IMAGE \
+      --set image.tag=$CI_COMMIT_SHORT_SHA \
+      --set imageNginx.repository=${CI_REGISTRY_IMAGE} \
+      --set imageNginx.tag=$CI_COMMIT_SHORT_SHA \
+      --set ingressNginx.enabled=true \
+      --set ingressNginx.hosts[0].host=${HOSTNAME} \
+      --set ingressNginx.hosts[0].paths[0].path=/ \
+      --set ingressNginx.tls[0].hosts[0]=${HOSTNAME} \
+      --set ingressNginx.tls[0].secretName=${SECRET_NAME} \
+      --set replicaCount=1 \
+      --set ddtrace.service=unigazin \
+      --set ddtrace.env=${DDENV} \
+      --set ddtrace.version=$CI_COMMIT_REF_NAME-$CI_COMMIT_SHORT_SHA
+
+deploy_prod:
+  extends: 
+    - .deploy
+  variables:
+    DDENV: unigazin-production
+    TLS: gazin
+  environment:
+    name: on-premise-prod
+  dependencies:
+    - docker_image_publish
+  rules:
+    - if: $CI_COMMIT_BRANCH == $TAG_BRANCH_PROD
+      when: always
+    - when: never
