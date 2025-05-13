@@ -10,7 +10,9 @@ class HomeController extends ctrl
 {
 
     public function home() {
-        $this->render('home');
+        $this->render('home',[
+            'titulo' => 'Home']
+        );
     }
 
 }

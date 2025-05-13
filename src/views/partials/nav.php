@@ -1,3 +1,8 @@
+<?php
+    $paginaAtiva = basename($_SERVER['PHP_SELF']); // aqui vai aparecer o nome da pagina
+    //print_r($paginaAtiva); // aqui vai aparecer o nome da pagina para ser ultilizada no link
+?>
+
 <head>
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
@@ -13,7 +18,6 @@
         }
     </style>
 
-
 </head>
 
 <header>
@@ -27,13 +31,13 @@
         <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
             <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link <?php echo ($paginaAtiva == 'index.php') ? 'active' : ''; ?>" href="">Home <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
+                    <a class="nav-link" href="">Agendamentos</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Disabled</a>
+                    <a class="nav-link" href="">Contato</a>
                 </li>
             </ul>
             <form class="form-inline my-2 my-lg-0">
