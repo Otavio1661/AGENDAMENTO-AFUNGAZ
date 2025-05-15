@@ -8,3 +8,5 @@ $router = new Router();
 
 //-----------------HOME-----------------//
 $router->get('/', 'HomeController@home');
+
+$router->get('/agendamentos', 'HomeController@agendamentos');

@@ -1,32 +1,17 @@
+<head>
 <style>
+
+    #carrossel{
+    background: rgb(12, 0, 120);    
+    }
 
     .carousel-item{
         height: 400px;
-        width: 100%;
     }
 
-    #img {
-        height: 200%;
-        width: 100%;
-        object-fit: contain; /* Mantém proporção e preenche o container */
-        object-position: center -200px;
-        display: block;
-        margin: 0 auto;
-    }
-
-        #img2 {
-        width: 100%;
-        height: 400px;
+    img {
+        height: 100%;
         object-fit: contain;
-        display: block;
-        margin: 0 auto;
-    }
-
-        #img3 {
-        height: 200%;
-        width: 100%;
-        object-fit: contain; /* Mantém proporção e preenche o container */
-        object-position: center -200px;
         display: block;
         margin: 0 auto;
     }
@@ -36,23 +21,28 @@
     }
 
 </style>
+</head>
 
-<section>
+<section id="carrossel">
     <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
                 <ol class="carousel-indicators">
                     <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
                     <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
                     <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                    <li data-target="#carouselExampleIndicators" data-slide-to="3"></li>
                 </ol>
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img id="img" class="d-block w-100" src="<?= $base; ?>assets/img/Afungaz1.png" alt="First slide">
+                <img class="d-block w-100" src="<?= $base; ?>assets/img/afungaz2.jpg" alt="First slide">
             </div>
             <div class="carousel-item">
-                <img id="img2" class="d-block w-100" src="<?= $base; ?>assets/img/afungaz2.jpg" alt="Second slide">
+                <img class="d-block w-100" src="<?= $base; ?>assets/img/afungaz3.jpg" alt="Second slide">
             </div>
             <div class="carousel-item">
-                <img id="img3" class="d-block w-100" src="<?= $base; ?>assets/img/Afungaz1.png" alt="Third slide">
+                <img class="d-block w-100" src="<?= $base; ?>assets/img/afungaz4.jpg" alt="Third slide">
+            </div>
+            <div class="carousel-item">
+                <img class="d-block w-100" src="<?= $base; ?>assets/img/Afungaz1.png" alt="Third slide">
             </div>
         </div>
         <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
