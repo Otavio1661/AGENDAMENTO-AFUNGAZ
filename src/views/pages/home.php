@@ -43,6 +43,7 @@
 
     <?php $render('nav'); ?>
     <?php $render('carrossel'); ?>
+    <?php $render('login'); ?>
 
     <section id="sobre">
             <div id="sobre-filho">

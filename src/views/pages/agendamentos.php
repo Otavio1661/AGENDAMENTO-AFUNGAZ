@@ -37,34 +37,6 @@
             }
         }
 
-        .custom-card {
-            width: 280px;
-            height: 350px;
-            background-color: white;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgb(0, 0, 0), 0 -2px 5px rgba(255, 255, 255, 0.6);
-            overflow: hidden;
-            text-align: center;
-            padding: 1px 15px 25px 1px;
-            margin-top: 50px;
-        }
-
-        .diferente-box {
-            box-shadow: 0 2px 5px rgba(255, 255, 255, 0.6), 0 -2px 10px rgb(0, 0, 0);
-        }
-
-        .custom-card img {
-            width: 100%;
-            height: 75%;
-            object-fit: cover;
-            border-radius: 5px;
-        }
-
-        .custom-card .btn {
-            margin-top: 20px;
-        }
-
         /* Estilo do modal */
         .modal {
             display: none;
@@ -77,7 +49,6 @@
             height: 100%;
             overflow: auto;
             background-color: rgba(0, 0, 0, 0.5);
-          
         }
 
         .modal-conteudo {
@@ -132,8 +103,7 @@
   transform: rotateY(180deg);
 }
 
-.card-front
- {
+.card-front {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -146,11 +116,12 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgb(0, 0, 0), 0 -2px 5px rgba(255, 255, 255, 0.6);
 }
 
-.card-back{
-
-      position: absolute;
+.card-back {
+  position: absolute;
   width: 100%;
   height: 100%;
   border-radius: 10px;
@@ -160,6 +131,8 @@
   padding: 15px;
   box-sizing: border-box;
   text-align: center;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgb(0, 0, 0), 0 -2px 5px rgba(255, 255, 255, 0.6);
 }
 
 .card-front img {
@@ -177,6 +150,33 @@
   justify-content: center;
   align-items: center;
 }
+
+
+.img-slider {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+  border-radius: 5px;
+}
+
+.img-slider img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+.img-slider img.active {
+  opacity: 1;
+  z-index: 1;
+}
+
+
 
 
     </style>
@@ -206,7 +206,10 @@
   <div class="card-flip">
     <div class="card-front">
       <h3>quadra</h3>
-      <img src="<?= $base; ?>assets/img/futsal.jpg" alt="Imagem do card">
+      <div class="img-slider">
+        <img src="<?= $base; ?>assets/img/campo.jpg" alt="Imagem do card">
+        <img src="<?= $base; ?>assets/img/futsal.jpg" alt="Imagem do card">
+      </div>
       <button class="btn btn-primary btn-block" onclick="event.stopPropagation(); abrirModal()">Agendar</button>
     </div>
     <div class="card-back">
@@ -220,7 +223,10 @@
   <div class="card-flip">
     <div class="card-front">
       <h3>quiosque</h3>
-      <img src="<?= $base; ?>assets/img/quiosque.jpg" alt="Imagem do card">
+        <div class="img-slider">
+            <img src="<?= $base; ?>assets/img/quiosque.jpg" alt="Imagem do card">
+            <img src="<?= $base; ?>assets/img/quiosque1.jpg" alt="Imagem do card">
+        </div>
       <button class="btn btn-primary btn-block" onclick="event.stopPropagation(); abrirModal()">Agendar</button>
     </div>
     <div class="card-back">
@@ -321,6 +327,28 @@
         }
     }
 </script>
+
+
+<script>
+  // Espera o DOM carregar
+  document.addEventListener("DOMContentLoaded", function () {
+    const sliders = document.querySelectorAll('.img-slider');
+
+    sliders.forEach(slider => {
+      const images = slider.querySelectorAll('img');
+      let current = 0;
+
+      images[current].classList.add('active');
+
+      setInterval(() => {
+        images[current].classList.remove('active');
+        current = (current + 1) % images.length;
+        images[current].classList.add('active');
+      }, 3000); // Troca a cada 3 segundos
+    });
+  });
+</script>
+
 
 
 </body>

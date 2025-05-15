@@ -1,0 +1,3 @@
+SELECT nome, senha
+FROM gazin.afungaz_usuarios
+WHERE nome = ':nome' AND senha = ':senha';
