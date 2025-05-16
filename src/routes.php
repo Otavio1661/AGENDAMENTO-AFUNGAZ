@@ -9,4 +9,8 @@ $router = new Router();
 //-----------------HOME-----------------//
 $router->get('/', 'HomeController@home');
 
+//-----------------AGENDAMENTOS-----------------//
 $router->get('/agendamentos', 'HomeController@agendamentos');
+
+//-----------------LOGIN-----------------//
+$router->get('/login', 'LoginController@verificarLogin');
